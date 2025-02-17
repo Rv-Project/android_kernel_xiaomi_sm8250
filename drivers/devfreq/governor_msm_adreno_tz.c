@@ -426,16 +426,16 @@ static int tz_get_target_freq(struct devfreq *devfreq, unsigned long *freq)
 		return result;
 	}
 
+	*freq = stats->current_frequency;
+	priv->bin.total_time += stats->total_time;
+	priv->bin.busy_time += stats->busy_time;
+	
 #ifdef CONFIG_ADRENO_IDLER
 	if (adreno_idler(stats, devfreq, freq)) {
 		/* adreno_idler has asked to bail out now */
 		return 0;
 	}
 #endif
-
-	*freq = stats->current_frequency;
-	priv->bin.total_time += stats->total_time;
-	priv->bin.busy_time += stats->busy_time;
 #if 1
 	// scale busy time up based on adrenoboost parameter, only if MIN_BUSY exceeded...
 	if ((unsigned int)(priv->bin.busy_time + stats->busy_time) >= MIN_BUSY) {
